@@ -8,9 +8,13 @@
 const PORT = 4006;
 
 /**
- * User-agent для запросов к ВКонтакте. Можно не менять, от него ничего не зависит
+ * User-agent для запросов к ВКонтакте.
+ * <s>Можно не менять, от него ничего не зависит</s>.
+ * Зависит - если UA от официального приложения - будет
+ * меньше ограничений (например, будут отдаваться прямые
+ * ссылки на видеозаписи).
  */
-const USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.0";
+const USER_AGENT = "VKAndroidApp/4.38-849 (Android 6.0; SDK 23; x86; Google Nexus 5X; ru)";
 
 
 
@@ -98,7 +102,7 @@ const onRequest = (request, response) => {
 			proxy(request, response, host, "/" + path + "?" + qs.stringify({
 				act: "a_check",
 				wait: 25,
-				mode: 2,
+				mode: 66,
 				key: GET.key,
 				ts: GET.ts,
 				version: GET.version || "1"
