@@ -28,11 +28,15 @@ const qs = require("querystring");
 
 const VERSION = 1;
 
+const CorsHeaders = {
+	"Access-Control-Allow-Origin": "*",
+	"Access-Control-Allow-Methods": "POST, GET"
+};
+
 const sendResponse = (response, body) => {
 	response.writeHead(200, {
 		"content-type": "application/json; charset=utf-8",
-		"Access-Control-Allow-Origin": "*",
-		"Access-Control-Allow-Methods": "POST, GET",
+		...CorsHeaders
 	});
 	response.write(body);
 	response.end();
@@ -53,13 +57,19 @@ const proxy = (request, response, host, path) => {
 		rejectUnauthorized: false
 	};
 
-	request.pipe(https.request(options, proxyResponse => {
-		const headers = { ...proxyResponse.headers };
-		headers["access-control-allow-origin"] = "*";
-		headers["access-control-allow-methods"] = "POST, GET";
-		response.writeHead(proxyResponse.statusCode, headers);
-		proxyResponse.pipe(response, { end: true });
-	}), { end: true });
+	const proxyRequest = https.request(options, proxyResponse => {
+		response.writeHead(proxyResponse.statusCode, {
+			...proxyResponse.headers,
+			...CorsHeaders
+		});
+		proxyResponse.pipe(response, {
+			end: true
+		});
+	});
+
+	request.pipe(proxyRequest, {
+		end: true
+	});
 };
 
 let countRequests = 0;
@@ -68,8 +78,6 @@ const onRequest = (request, response) => {
 
 	const parsedUrl = url.parse(request.url, true);
 	const GET = parsedUrl.query;
-
-	//process.stdout.write("\r" + parsedUrl.pathname + "\n");
 
 	let host = request.host;
 	let path = parsedUrl.pathname;
@@ -82,7 +90,7 @@ const onRequest = (request, response) => {
 			return;
 
 		case "/favicon.ico":
-			sendResponse(response, "fail");
+			sendResponse(response, ".");
 			return;
 
 		case "/longpoll":
@@ -124,4 +132,4 @@ let s = 0;
 setInterval(() => {
 	process.stdout.write(`\r${symbols[s % symbols.length]} working... ${countRequests} requests handled`);
 	s++;
-}, 200);
+}, 150);
