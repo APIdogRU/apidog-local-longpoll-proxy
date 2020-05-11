@@ -131,6 +131,29 @@ const onRequest = (request, response) => {
 	}
 };
 
+const checkForUpdate = () => {
+	https.get('https://raw.githubusercontent.com/APIdogRU/apidog-local-longpoll-proxy/master/package.json', res => {
+		let content = '';
+		res.on('data', chunk => content += chunk);
+		res.on('end', () => {
+			const json = JSON.parse(content);
+
+			if (json.apidog_llpp_version > VERSION) {
+				console.warn(`########################################################################
+###           There is a new version. In order to update,            ###
+###        follow the link below and download the new version.       ###
+### https://github.com/APIdogRU/apidog-local-longpoll-proxy/releases ###
+########################################################################`);
+			}
+		
+		});
+	});
+};
+
+
+
+checkForUpdate();
+
 console.log(`APIdog Local LongPoll Proxy (version ${VERSION})`);
 console.log("Starting LLPP...");
 http.createServer(onRequest).listen(PORT);
