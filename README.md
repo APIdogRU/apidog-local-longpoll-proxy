@@ -6,7 +6,7 @@
 	```
 0. Install all dependencies
 	```bash
-	npm install
+	npm i
 	```
 0. Start server ...
 	```bash
@@ -14,7 +14,7 @@
 	```
 	... or build standalone executable file by:
 	```bash
-	pkg .
+	npm run build
 	  # wait...
 	./apidog-longpoll-linux # for linux
 	./apidog-longpoll-win.exe # for windows
