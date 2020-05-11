@@ -30,7 +30,7 @@ const https = require("https");
 const url = require("url");
 const qs = require("querystring");
 
-const VERSION = 1;
+const VERSION = 2;
 
 const CorsHeaders = {
 	"access-control-allow-origin": "*",
@@ -47,6 +47,8 @@ const sendResponse = (response, body) => {
 };
 
 const proxy = (request, response, host, path) => {
+	const headers = request.headers;
+
 	const options = {
 		hostname: host,
 		path: path,
@@ -58,10 +60,14 @@ const proxy = (request, response, host, path) => {
 			"connection": "keep-alive",
 			"referer": "https://vk.com/",
 			"origin": "https://vk.com",
-			"cookie": ""
+			"cookie": "",
 		},
-		rejectUnauthorized: false
+		rejectUnauthorized: false,
 	};
+
+	if (headers['content-type']) {
+		options.headers['content-type'] = headers['content-type'];
+	}
 
 	const proxyRequest = https.request(options, proxyResponse => {
 		response.writeHead(proxyResponse.statusCode, {
@@ -73,15 +79,16 @@ const proxy = (request, response, host, path) => {
 		});
 	});
 
+
 	request.pipe(proxyRequest, {
 		end: true
 	});
 };
 
+
 let countRequests = 0;
 
 const onRequest = (request, response) => {
-
 	const parsedUrl = url.parse(request.url, true);
 	const GET = parsedUrl.query;
 
@@ -91,15 +98,21 @@ const onRequest = (request, response) => {
 	countRequests++;
 
 	switch (parsedUrl.pathname) {
-		case "/ack":
+		case "/ack": {
 			sendResponse(response, JSON.stringify({status: true, version: VERSION}));
 			return;
+		}
 
-		case "/favicon.ico":
+		case "/favicon.ico": {
 			sendResponse(response, ".");
 			return;
+		}
 
-		case "/longpoll":
+		case "/longpoll": {
+			if (!GET.server) {
+				sendResponse(response, 'wtf');
+				return;
+			} 
 			[host, path] = GET.server.split("/");
 			proxy(request, response, host, "/" + path + "?" + qs.stringify({
 				act: "a_check",
@@ -107,35 +120,27 @@ const onRequest = (request, response) => {
 				mode: 66,
 				key: GET.key,
 				ts: GET.ts,
-				version: GET.version || "1"
+				version: GET.version || "1",
 			}));
 			return;
+		}
 
-		default:
+		default: {
+			proxy(request, response, "api.vk.com", request.url);
+		}
 	}
-
-	proxy(request, response, "api.vk.com", request.url);
 };
 
-process.stdout.write(
-`     ▓▓      ▓▓▓▓▓▓▓  ▓▓      ▓▓
-    ▓▓▓▓     ▓▓    ▓▓ ▓▓      ▓▓
-   ▓▓  ▓▓    ▓▓    ▓▓ ▓▓      ▓▓  
-  ▓▓    ▓▓   ▓▓ ▓▓▓▓  ▓▓  ▓▓▓▓▓▓ ▓░░░░░▓  ▓▓▓▓▓ 
- ▓▓  ▓▓▓▓▓▓  ▓▓       ▓▓ ▓▓   ▓▓ ▓▓░░░▓▓ ▓▓   ▓▓
- ▓▓      ▓▓  ▓▓       ▓▓ ▓▓   ▓▓ ▓▓▓░▓▓▓ ▓▓   ▓▓
-▓▓        ▓▓ ▓▓       ▓▓  ▓▓▓▓▓  ▓▓▓▓▓▓▓  ▓▓▓▓▓▓
-                                              ▓▓
-                                          ▓▓▓▓▓\n`);
 console.log(`APIdog Local LongPoll Proxy (version ${VERSION})`);
 console.log("Starting LLPP...");
 http.createServer(onRequest).listen(PORT);
 console.log(`LLPP successfully started on port ${PORT}...`);
 
-const symbols = [" ", "░", "▒", "▓", "█", "▓", "▒", "░"];
+//const symbols = [" ", "░", "▒", "▓", "█", "▓", "▒", "░"];
+const symbols = ["|", "/", "-", "\\"];
 let s = 0;
 
 setInterval(() => {
 	process.stdout.write(`\r${symbols[s % symbols.length]} working... ${countRequests} requests handled`);
 	s++;
-}, 150);
+}, 200);

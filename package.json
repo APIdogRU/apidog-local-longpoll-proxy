@@ -1,19 +1,20 @@
 {
 	"name": "apidog-longpoll",
-	"version": "0.1.1",
+	"version": "0.2.0",
 	"description": "APIdog Local LongPoll Proxy server",
 	"private": true,
 	"main": "index.js",
 	"bin": "index.js",
 	"scripts": {
-		"run": "node index.js"
+		"start": "node index.js",
+		"build": "pkg ."
 	},
 	"keywords": [],
 	"author": "Vladislav Veluga",
 	"homepage": "https://apidog.ru/",
 	"license": "MIT",
 	"dependencies": {
-		"pkg": "^4.4.0"
+		"pkg": "4.4.8"
 	},
 	"pkg": {
 		"targets": [
