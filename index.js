@@ -117,7 +117,7 @@ const onRequest = (request, response) => {
 			proxy(request, response, host, "/" + path + "?" + qs.stringify({
 				act: "a_check",
 				wait: 25,
-				mode: 66,
+				mode: GET.mode || (2 + 8 + 64 + 128),
 				key: GET.key,
 				ts: GET.ts,
 				version: GET.version || "1",
