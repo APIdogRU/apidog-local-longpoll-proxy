@@ -1,6 +1,6 @@
 {
 	"name": "apidog-longpoll",
-	"version": "0.2.2",
+	"version": "0.2.3",
 	"description": "APIdog Local LongPoll Proxy server",
 	"private": true,
 	"main": "index.js",
@@ -19,9 +19,8 @@
 	"pkg": {
 		"targets": [
 			"node8-win-x64",
-			"node8-win-x86",
 			"node8-linux-x64"
 		]
 	},
-	"apidog_llpp_version": 3
+	"apidog_llpp_version": 4
 }

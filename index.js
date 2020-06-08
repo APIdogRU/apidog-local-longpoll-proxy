@@ -30,7 +30,7 @@ const https = require("https");
 const url = require("url");
 const qs = require("querystring");
 
-const VERSION = 2;
+const VERSION = 4;
 
 const CorsHeaders = {
 	"access-control-allow-origin": "*",
