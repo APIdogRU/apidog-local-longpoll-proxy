@@ -62,4 +62,3 @@ typings/
 /.idea/
 /apidog-longpoll-*
 /apidog-longpoll.iml
-/package-lock.json
