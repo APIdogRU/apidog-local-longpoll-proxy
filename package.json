@@ -1,6 +1,6 @@
 {
 	"name": "@apidog/local-longpoll-proxy",
-	"version": "0.3.0",
+	"version": "0.4.0",
 	"description": "APIdog Local LongPoll Proxy server",
 	"private": true,
 	"main": "index.js",
@@ -14,13 +14,13 @@
 	"homepage": "https://apidog.ru/",
 	"license": "MIT",
 	"devDependencies": {
-		"@types/node": "17.0.42",
-		"pkg": "5.7.0"
+		"@types/node": "20.10.7",
+		"@yao-pkg/pkg": "5.11.1"
 	},
 	"pkg": {
 		"targets": [
-			"node14-win-x64",
-			"node14-linux-x64"
+			"node20-win-x64",
+			"node20-linux-x64"
 		]
 	},
 	"apidog_llpp_version": 5
