@@ -30,8 +30,9 @@ const USER_AGENT = 'VKAndroidApp/7.7-10445 (Android 10; SDK 29; arm64-v8a; Xiaom
 
 // Заголовки для CORS: разрешаем apidog.ru получить ответ
 const corsHeaders = {
-	'access-control-allow-origin': '*',
-	'access-control-allow-methods': 'POST, GET',
+	'access-control-allow-origin': 'https://apidog.ru',
+	'access-control-allow-methods': 'POST, GET, OPTIONS',
+	'access-control-max-age': '86400',
 };
 
 /**
@@ -97,8 +98,14 @@ let countRequests = 0;
  * @param {http.ServerResponse} response
  */
 function onRequest(request, response) {
+	if (request.method === 'OPTIONS') {
+		response.writeHead(204, corsHeaders).end();
+
+		return;
+	}
+
 	const host = request.headers.host;
-	const url = new URL(`http://${host}${request.url}`);
+	const url = new URL(request.url, `http://${host}`);
 	const path = url.pathname;
 	const query = url.searchParams;
 

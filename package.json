@@ -1,6 +1,6 @@
 {
 	"name": "@apidog/local-longpoll-proxy",
-	"version": "0.4.0",
+	"version": "0.4.1",
 	"description": "APIdog Local LongPoll Proxy server",
 	"private": true,
 	"main": "index.js",
@@ -23,5 +23,5 @@
 			"node20-linux-x64"
 		]
 	},
-	"apidog_llpp_version": 5
+	"apidog_llpp_version": 6
 }
